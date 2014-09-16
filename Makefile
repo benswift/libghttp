@@ -1,19 +1,20 @@
-SHELL        = /bin/sh
-CC           = clang
-CFLAGS       = -dynamiclib -fPIC -pedantic -Wall -Wextra -march=native
-DEBUGFLAGS   = -O0 -g
-RELEASEFLAGS = -O3 -g
+# Makefile template for shared library
 
-TARGET  = libHTTPClient.dylib
-SOURCES = $(shell echo API/*.c)
+CC = clang # C compiler
+CFLAGS = -fPIC -Wall -Wextra -O2 -g # C flags
+LDFLAGS = -dynamiclib # linking flags
+RM = rm -f # rm command
+TARGET_LIB = libghttp.dylib # target lib
 
-# PREFIX = $(DESTDIR)/usr/local
-# BINDIR = $(PREFIX)/bin
+SRCS = ghttp.c http_base64.c http_date.c http_hdrs.c http_req.c http_resp.c http_trans.c http_uri.c # source files
+OBJS = $(SRCS:.c=.o)
 
-all: $(TARGET)
+.PHONY: all
+	all: $(TARGET_LIB)
 
-$(TARGET): $(OBJECTS)
-	$(CC) $(FLAGS) $(CFLAGS) $(DEBUGFLAGS) -IAPI  $(SOURCES) -o $(TARGET)
+$(TARGET_LIB):
+	$(CC) $(LDFLAGS) $(CFLAGS) $(SRCS) -o $@
 
+.PHONY: clean
 clean:
-	rm $(TARGET)
+	$(RM) $(TARGET_LIB) $(OBJS)
